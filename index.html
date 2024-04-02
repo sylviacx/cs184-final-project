@@ -41,7 +41,6 @@
         <p> We are trying to solve the problem of approximately simulating material movement and interactions. 
             This is important because many real world simulators rely heavily on movement/interaction logic and creating an approximate version gives us some experience in building these system models. 
         </p>
-        <br>
         <p>
             We plan to solve this problem by using cellular automaton logic to determine particle movement. 
             This means we will use a 3D cellular grid to represent our "world" and determine a falling particle's next position by looking at the 9 cells directly beneath and diagonal to it.
@@ -49,7 +48,6 @@
             If 2 materials with a special interaction "touch", i.e. are in adjacent cells, we will perform an interaction.
             This can look like merging the 2 touching cells into a single cell (i.e. water + fire = smoke) or converting both cells into a completely new material (i.e. water + sand = 2 wet sand).
         </p>
-        <br>
         <p>
             This problem is challenging in that achieving high performance on large worlds is tough.
             In conventional 2D worlds you only need to render the splice of world that the user sees.
@@ -58,24 +56,28 @@
         </p>
             
     <h2 align="middle">Goals and Deliverables</h1>
+        <h3 align="middle">Planned Deliverables</h3>
         <p>
           Our main goal is to be able to implement a novel 3D sand falling simulation not with physics but with cellular automation. 
           This simulation will include different particles (i.e. sand, water, fire) that will have different behaviors based on the other particles it interacts with. 
         </p>
-        <br>
         <p>
-          Milestone 1: Demo where you see some sand which was there initially fall down correctly and stay on the ground, ability to move around.
+          Milestone 1: Demo where you see several sand blocks falling from a deterministic spawning point. 
+          The sand should fall and settle on the ground with collisions on other sand blocks.
         </p>
-        <br>
         <p>
           Our baseline plan for the final submission is a window where users can view a world space and place materials by clicking with their cursor. 
           Materials created will fall from their spawned location and settle onto the ground, potentially colliding with other particles beneath it.
           Users will also be able to change the type of material they create.
           When different materials touch, they will simulate some kind of reaction that users can observe.
+          This is a list of materials and interactions we want in our baseline plan:
+            <li><b>Sand</b>: falls down, turns into wet sand when touching water, burns into nothing from fire</li>
+            <li><b>Water</b>: volumetric, makes sand wet, puts out fire</li>
+            <li><b>Fire</b>: ethereal, turns into smoke, creates steam on touching water, melts sand</li>
           Our simulation will look similar to the example shown below.
         </p>
         <div align="center">
-            <table style="width=100%">
+            <table style="width=100%;">
                 <tr>
                     <td align="middle">
                     <img src="images/reddit_ss_falling_sand_game.png" width="480px" />
@@ -83,37 +85,40 @@
                 </tr>
             </table>
         </div>
-        <br>
-        <p>
-          Our stretch goals: render blocks as smaller particles with more features (),
-                    use cube marching to smooth out the surface,
-                    optimize performance via multithreading,
-                    optimize performance via occlussion culling,
-                    shaders/lighting,
-                    tweak the cellular automata algorithm to include wavy patterns
-        </p>
+        <h3>Extra/Stretch Goals</h3>
+        <ul>
+          <li>Add more materials and interactions</li>
+          <li>Use cube marching to smooth out the surface of a blocky world</li>
+          <li>Optimize performance via multithreading</li>
+          <li>Optimize performance via occlussion culling</li>
+          <li>Create shaders/lighting</li>
+          <li>Add wind as a variable in particle movement</li>
+          <li>More complex interactions</li>
+          <li>Tweak the cellular automata algorithm to include wavy patterns</li>
+          <li>Water opacity</li>
+        </ul>
 
     <h2 align="middle">Schedule</h1>
         <ul>
-            <li>Week 1: Viewport and navigation</li>
+            <li><b>Week 1</b>: Viewport and navigation</li>
                 <p>
                     Create the initial viewport window which can render cubes from the world grid.
                 </p>
-            <li>Week 2: Simple simulation, simulate every cell on a smaller world size.</li>
+            <li><b>Week 2</b>: Simple simulation, simulate every cell on a smaller world size.</li>
                 <p>
                     Simulate sand falling from a deterministic starting point. 
                     Include collision logic on other blocks of sand.
                 </p>
-            <li>Week 3: Optimize simulation to only simulate interesing areas, add viewport interaction with the world. </li>
-            <p>
-                Add the ability to add materials into the world by clicking.
-                Make simulation faster by simulating only parts of the world which need to be simulated.
-            </p>
-            <li>Week 4: More materials, material interactions.  </li>
+            <li><b>Week 3</b>: Optimize simulation to only simulate interesing areas, add viewport interaction with the world. </li>
+                <p>
+                    Add the ability to add materials into the world from a specific starting point by clicking.
+                    Make simulation faster by simulating only parts of the world which need to be simulated from the viewpoint of the user.
+                </p>
+            <li><b>Week 4</b>: More materials, material interactions.  </li>
                 <p>
                     Add more materials and interactions.
                 </p>
-            <li>Week 5: Finish work on final presentation and deliverables</li>
+            <li><b>Week 5</b>: Finish work on final presentation and deliverables</li>
             
         </ul>
     <h2 align="middle">Resources</h1>
@@ -123,12 +128,10 @@
         <li><a href="https://maxbittker.com/making-sandspiel">Making Sandspiel</a></li>
         <li><a href="https://blog.macuyiko.com/post/2020/an-exploration-of-cellular-automata-and-graph-based-game-systems-part-4.html">Exploration of Cellular Automata and Graph Based Game Systems</a></li>
         <li><a href="https://is.muni.cz/th/w12aw/SimulatingWorldsCA.pdf">Simulating Game Worlds Using Cellular Automata</a></li>
-
     </ul>
     <h3>Software</h3>
     <ul>
         <li>Language: C++</li>
         <li>Frameworks: OpenGL, glfw. </li>
     </ul>
-
 </body>
