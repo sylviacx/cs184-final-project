@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    background-color: white;
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+  kbd {
+    color: #121212;
+  }
+</style>
+
+<title>CS 184 Final Project Proposal</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+
+<body>
+
+    <h1 align="middle">CS 184: Final Project Proposal 2024</h1>
+    <h1 align="middle">3D Falling Sand</h1>
+    <h2 align="middle">Sylvia Chen, Artem Shumay, Lawrence Lam, Aaron Haowen Zheng</h2>
+
+    <h2 align="middle">Summary</h1>
+        <p> Our project idea is to simulate falling 3D sand as well as other materials, but with a focus on cellular automaton particle simulation rather than realistic physics.
+            We also want to add interactions between the materials, such as water particles putting out fire. 
+            Ultimately, we want to present a material simulator where users can select and place different blocks of materials and observe how they fall/interact.
+        </p>
+    
+    <h2 align="middle">Problem Description</h1>
+        <p> <a href="https://en.wikipedia.org/wiki/Falling-sand_game">Falling-sand</a> type simulation in 3D.</p>
+        <p> We are trying to solve the problem of approximately simulating material movement and interactions. 
+            This is important because many real world simulators rely heavily on movement/interaction logic and creating an approximate version gives us some experience in building these system models. 
+            
+            We plan to solve this problem by using cellular automaton logic to determine particle movement. 
+            This means we will use a 3D cellular grid to represent our "world" and determine a faalling particle's next position by looking at the 9 cells directly beneath and diagonal to it.
+            If 2 materials with a special interaction "touch", i.e. are in adjacent cells, we will perform an interaction.
+            This can look like merging the 2 touching cells into a single cell (i.e. water + fire = smoke) or converting both cells into a completely new material (i.e. water + sand = 2 wet sand).
+            This problem is challenging in that achieving high performance on large worlds is tough. 
+            In conventional 2D worlds you only need to render the splice of world that the user sees. However, in 3D user has pra
+        </p>
+            
+    <h2 align="middle">Goals and Deliverables</h1>
+        <p>
+          Our main goal is to be able to implement a novel 3D sand falling simulation not with physics but with cellular automation. 
+          This simulation will include different particles (i.e. sand, water, fire) that will have different behaviors based on the other particles it interacts with. 
+          
+          Our baseline plan is a window where users can view a world space and place materials by clicking with their cursor. 
+          Materials created will fall from their spawned location and settle onto the ground, potentially colliding with other particles beneath it.
+          Users will also be able to change the type of material they create.
+          When different materials touch, they will simulate some kind of reaction that users can observe.
+          
+          Our stretch goals: render blocks as smaller particles with more features, use cube marching to smooth out the surface, optimize performance via multithreading, optimize performance via occlussion culling.
+        </p>
+
+    <h2 align="middle">Schedule</h1>
+        <ul>
+            <li>Week 1: Viewport and navigation</li>
+            <li>Week 2: Simple simulation</li>
+            <li>Week 3: More material interaction, and viewport interaction with the world </li>
+            <li>Week 4: Design custom textures(as opposed to single color) for particles, tweak the cellular automata algorithm to include wavy patterns </li>
+            <li>Week 5: Finish work on final presentation and deliverables</li>
+        </ul>
+    <h2 align="middle">Resources</h1>
+
+</body>
