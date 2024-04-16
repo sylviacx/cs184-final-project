@@ -33,16 +33,62 @@
 
     <h2 align="middle">Accomplishments</h2>
         <p>
-            TODO.
+            Based on our proposal, our milestone goal was to create a demo of sand falling from a deterministic spawning point and settling on the ground with collision from other sand blocks.
+            We were able to accomplish exactly this for our milestone.
+        </p>
+        <p>
+            We built our project off of Project 4's codebase, copying over the code and keeping files/functions that were relevant to our project.
+            Then, we started on creating the viewport and callbacks.
+            TODO: Artem did this part so I think he can explain it best.
+        </p>
+        <p>
+            Once our viewport had been created, we focused on displaying a single cube.
+            In order to define a cube, we calculated the position and normals of 6 faces, about a given corner position.
+        </p>
+        <p>
+            Once our viewpoort could successfully display a single cube, we then implemented some helper functions for spawning and moving sand blocks within a 16 x 16 chunk, which is the current world space of our demo.
+            Now we could simulate sand falling by looping through every cell in the chunk and updating cells that were filled with sand.
+        </p>
+        <p>
+            Our logic on deciding how a sand block should fall is based on cellular automaton. 
+            The algorithm is as follows:
+                <li>
+                    Create a list <code>dirs</code> of all 8 adjacent vector directions below this cell: Vector3d(dx, dy, dz)
+                </li>
+                <li>
+                    If the cell directly below is empty (AIR), swap them.
+                </li>
+                <li>
+                    Generate a random index 0 - <code>size(dirs)</code>. Store the Vector3D at that index, then replace that index with the last Vector3D in <code>dirs</code>.
+                    This allows us to remove adjacent directions from <code>dirs</code>, preventing them from being selected again.
+                </li>
+                <li>
+                    While <code>size(dirs) != 0</code>, keep generating random indexes and checking if the adjacent cell represented by that index is empty (AIR).
+                    If the adjacent cell is empty, swap with that cell and return.
+                </li>
         </p>
 
     <h2 align="middle">Preliminary Results</h2>
         <p>
-            TODO.
+            From our work on the milestone, the simulation based on cellular automaton looks as we expected. Below is a screenshot of the sand pile that is created from our algorithm.
+            It is difficult to comment on the efficiency of our implementation, as our demo only works on a 16x16 chunk, which is far from the size we intend to make our final demo.
         </p>
+        <div align="center">
+            <table style="width=100%;">
+                <tr>
+                    <td align="middle">
+                    <img src="images/sand_sim.png" width="480px" />
+                </tr>
+            </table>
+        </div>
     
     <h2 align="middle">Reflection</h2>
         <p>
-            TODO.
+            We are on track with our schedule, as we were able to accomplish everything we initially wanted for our milestone. 
+            Next steps for us is to simulate on a larger world space and potentially optimize.
+            From our proposal, we were thinking of optimizng by simulating only interesting areas of the world.
+            We also need to add a GUI and allow users to interact more cleanly with the viewport.
+            We also need to add more materials than just sand, and implement interactions between them.
+            We don't feel the need to change our proposed schedule much, as we believe we are on track.
         </p>
 </body>
