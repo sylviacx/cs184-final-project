@@ -39,15 +39,14 @@
         <p>
             We built our project off of Project 4's codebase, copying over the code and keeping files/functions that were relevant to our project.
             Then, we started on creating the viewport and callbacks.
-            TODO: Artem did this part so I think he can explain it best.
         </p>
         <p>
             Once our viewport had been created, we focused on displaying a single cube.
             In order to define a cube, we calculated the position and normals of 6 faces, about a given corner position.
         </p>
         <p>
-            Once our viewpoort could successfully display a single cube, we then implemented some helper functions for spawning and moving sand blocks within a 16 x 16 chunk, which is the current world space of our demo.
-            Now we could simulate sand falling by looping through every cell in the chunk and updating cells that were filled with sand.
+            Once our viewport could successfully display a single cube, we then implemented some helper functions for spawning and moving sand/air blocks within a 16 x 16 chunk, which is the current world space of our demo.
+            Now we could simulate sand falling by looping through every cell in the chunk and updating them using their respective materal update functions.
         </p>
         <p>
             Our logic on deciding how a sand block should fall is based on cellular automaton. 
