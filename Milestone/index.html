@@ -1,102 +1,168 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<style>
-  body {
-    background-color: white;
-    padding: 100px;
-    width: 1000px;
-    margin: auto;
-    text-align: left;
-    font-weight: 300;
-    font-family: 'Open Sans', sans-serif;
-    color: #121212;
-  }
-  h1, h2, h3, h4 {
-    font-family: 'Source Sans Pro', sans-serif;
-  }
-  kbd {
-    color: #121212;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 184 Final Project Milestone 2024</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Source+Sans+Pro:400,700" rel="stylesheet">
+    <style>
+        body, h1, h2, h3, p, li {
+            margin: 0;
+            padding: 0;
+        }
 
-<title>CS 184 Final Project Milestone</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
 
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            font-family: 'Source Sans Pro', sans-serif;
+            color: #35424a;
+        }
+
+        h1 {
+            margin-bottom: 0.5em;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        h3 {
+            font-weight: normal;
+            color: #666;
+        }
+
+        p, li {
+            font-size: 16px;
+            color: #666;
+            padding: 8px 0;
+        }
+
+        a {
+            color: #0077cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        ul {
+            padding: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #5c94d7;
+            color: #fff;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #4a77d4;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            p, li {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
 <body>
-
-    <h1 align="middle">CS 184: Final Project Milestone 2024</h1>
-    <h1 align="middle">3D Falling Sand</h1>
-    <h2 align="middle">Sylvia Chen, Artem Shumay, Lawrence Lam, Aaron Haowen Zheng</h2>
-    <div align="middle">
-        <p><a href="https://docs.google.com/presentation/d/1ejm16jUp7ZPuaaG4DeEUOs5lnhTKcXAleBnK-1MxjLg/edit?usp=sharing">Milestone Slides</a></p>
-      </div>
-
-
-
-
-    <h2 align="middle">Accomplishments</h2>
-        <p>
-            Based on our proposal, our milestone goal was to create a demo of sand falling from a deterministic spawning point and settling on the ground with collision from other sand blocks.
-            We were able to accomplish exactly this for our milestone.
-        </p>
-        <p>
-            We built our project off of Project 4's codebase, copying over the code and keeping files/functions that were relevant to our project.
-            Then, we started on creating the viewport and callbacks. We used HW4 logic and code for camera to achieve correct perspective.
-        </p>
-        <p>
-            Once our viewport had been created, we focused on displaying a single cube.
-            In order to define a cube, we calculated the position and normals of 6 faces, about a given corner position.
-        </p>
-        <p>
-            Once our viewport could successfully display a single cube, we then implemented some helper functions for spawning and moving sand/air blocks within a 16 x 16 chunk, which is the current world space of our demo.
-            Now we could simulate sand falling by looping through every cell in the chunk and updating them using their respective materal update functions.
-        </p>
-        <p>
-            Our sand update function logic is based on cellular automaton. 
-            The algorithm is as follows:
-                <li>
-                    Create a list <code>dirs</code> of all 8 adjacent vector directions below this cell: Vector3d(dx, dy, dz).
-                </li>
-                <li>
-                    If the cell directly below is empty (AIR), swap them.
-                </li>
-                <li>
-                    Generate a random index 0 - <code>size(dirs)</code>. Store the Vector3D at that index temporarily, then replace that index with the last Vector3D in <code>dirs</code>.
-                    Return the original Vector3D at that index.
-                    This allows us to remove adjacent directions from <code>dirs</code>, preventing them from being selected again.
-                </li>
-                <li>
-                    While <code>size(dirs) != 0</code>, keep generating random indexes and checking if the adjacent cell represented by that index is empty (AIR).
-                    If the adjacent cell is empty, swap with that cell and return.
-                </li>
-                <li>
-                    The update function will do nothing if all 9 cells directly and adjacently beneath this sand block are not empty.
-                </li>
-        </p>
-
-    <h2 align="middle">Preliminary Results</h2>
-        <p>
-            From our work on the milestone, the simulation based on cellular automaton looks as we expected. Below is a screenshot of the sand pile that is created from our algorithm.
-            It is difficult to comment on the efficiency of our implementation, as our demo only works on a 16x16 chunk, which is far from the size we intend to make our final demo.
-        </p>
-        <div align="center">
-            <table style="width=100%;">
-                <tr>
-                    <td align="middle">
-                    <img src="images/sand_sim.png" width="480px" />
-                </tr>
-            </table>
+    <div class="container">
+        <div class="header">
+            <h1>CS 184: Final Project Milestone 2024</h1>
+            <h2>3D Falling Sand</h2>
+            <h3>Aaron Haowen Zheng, Sylvia Chen, Artem Shumay, Lawrence Lam</h3>
         </div>
-    
-    <h2 align="middle">Reflection</h2>
-        <p>
-            We are on track with our schedule, as we were able to accomplish everything we initially wanted for our milestone. 
-            Next steps for us is to simulate on a larger world space and optimize if needed.
-            From our proposal, we were thinking of optimizing by simulating only interesting areas of the world.
-            We also need to add a GUI and allow users to interact more cleanly with the viewport.
-            We also need to add more materials than just sand, and implement interactions between them.
-            We don't feel the need to change our proposed schedule much, as we believe we are on track.
-        </p>
+
+        <div>
+            <h2>Accomplishments</h2>
+            <p>Based on our proposal, our milestone goal was to create a demo of sand falling from a deterministic spawning point and settling on the ground with collision from other sand blocks. We were able to accomplish exactly this for our milestone.</p>
+            <p>We built our project off of Project 4's codebase, copying over the code and keeping files/functions that were relevant to our project. Then, we started on creating the viewport and callbacks. We used HW4 logic and code for camera to achieve correct perspective.</p>
+            <p>Once our viewport had been created, we focused on displaying a single cube. In order to define a cube, we calculated the position and normals of 6 faces, about a given corner position.</p>
+            <p>Once our viewport could successfully display a single cube, we then implemented some helper functions for spawning and moving sand/air blocks within a 16 x 16 chunk, which is the current world space of our demo. Now we could simulate sand falling by looping through every cell in the chunk and updating them using their respective material update functions.</p>
+            <p>Our sand update function logic is based on cellular automaton. The algorithm is as follows:
+                <ul>
+                    <li>Create a list <code>dirs</code> of all 8 adjacent vector directions below this cell: Vector3d(dx, dy, dz).</li>
+                    <li>If the cell directly below is empty (AIR), swap them.</li>
+                    <li>Generate a random index from 0 to <code>size(dirs) - 1</code>. Store the Vector3D at that index temporarily, then replace that index with the last Vector3D in <code>dirs</code>. This allows us to remove adjacent directions from <code>dirs</code>, preventing them from being selected again.</li>
+                    <li>While <code>size(dirs) > 0</code>, keep generating random indexes and checking if the adjacent cell represented by that index is empty (AIR). If the adjacent cell is empty, swap with it and return.</li>
+                    <li>The update function will do nothing if all 9 cells directly and adjacently beneath this sand block are not empty.</li>
+                </ul>
+            </p>
+        </div>
+
+        <div>
+            <h2>Preliminary Results</h2>
+            <p>From our work on the milestone, the simulation based on cellular automaton looks as we expected. Below is a screenshot of the sand pile that is created from our algorithm. It is difficult to comment on the efficiency of our implementation, as our demo only works on a 16x16 chunk, which is far from the size we intend to make our final demo.</p>
+            <img src="images/sand_sim.png" alt="Sand Simulation Screenshot">
+            <p>
+                We also managed to simulate water and sand blocks falling together with some success. We created a custom shader for falling water, and we also gave the water a degree of transparency. In addition, we customized the falling of the water blocks, so that 
+                they can not only flow down but also horizontally, which is due to water's viscous nature. 
+             </p>
+            <img src="images/water_sand_sim.png" alt="Sand Water Simulation Screenshot" />
+        </div>
+        
+        <div>
+            <h2>Reflection</h2>
+            <p>We are on track with our schedule, as we were able to accomplish everything we initially wanted for our milestone. Next steps for us are to simulate on a larger world space and optimize if needed. From our proposal, we were thinking of optimizing by simulating only interesting areas of the world. We also need to add a GUI and allow users to interact more cleanly with the viewport. We also need to add more materials than just sand, and implement interactions between them. We don't feel the need to change our proposed schedule much, as we believe we are on track.</p>
+        </div>
+
+        <footer>
+            3D Falling Sand Game 2024. All Rights Reserved
+        </footer>
+    </div>
 </body>
+</html>
