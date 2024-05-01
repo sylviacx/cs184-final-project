@@ -126,5 +126,196 @@
             <h2>3D Falling Sand</h2>
             <h3>Aaron Haowen Zheng, Sylvia Chen, Artem Shumay, Lawrence Lam</h3>
         </div>
+
+        <div>
+            <h2>Abstract</h2>
+                <!-- TODO: summary of technical approach, summary of results -->
+                <p>
+                    Our project idea is to create a 3D falling sand game with a focus on <bold>cellular automaton</bold> based particle simulation instead of realistic physics.
+                    While the genre is described as a "falling sand game", we included several other materials such as water, fire, and grass.
+                    Users can move around the world space, spawning different materials from anywhere within the world, and observing how they interact with other materials.
+                </p>
+        </div>
+
+        <div>
+            <h2>Technical Approach</h2>
+                <p>
+                    We built our final project on top of Project 4's codebase so that we would already have a pipeline set up for shaders and camera work.
+                    However, we still had to modify camera movement, callback methods, and shaders to fit our project idea. 
+                    We also had to build a framework for the different materials we wanted to add to our game.
+                </p>
+
+            <h3>Camera</h3>
+                <!-- TODO: any problems we had (clipping, squares resizing to rectangles when window was resized) -->
+                <p>
+                    For the camera, we had to toggle the default camera viewpoint, as well as control the movement of the camera with respect to the viewer angle. 
+                    <br/>For the default camera viewpoint, we configured the camera's phi, theta and r parameters and set phi(horizontal angle) and theta(azimuthal angle) to zero, and
+                    set the r as a constant, viewing a fixed point in the space. 
+                    <br/>We also wrote code to control the movement of the camera using the mouse. Our settings enable that dragging the mouse will rotate the camera and holding down right click will pan the camera. 
+                    <br/>We faced two major bugs, the first one being that the camera frequently is clipping, meaning the edges of the scene cannot be detected adequately and is sometimes just not rendered. This essentially
+                    means the desired FoV of the camera is not being achieved, as there are certain angles to the right hand side that cannot be seen. This was fixed, although we were not sure how or why.
+                    <!--Todo, someone look at the first bug part-->
+                    <br/> Another bug that we encountered was how the screen size affected the block dimensions, making the blocks rectangular on occasion. The fix for this was that we set the dimensions for each block to be the 
+                    relevant width, height parameters of the block, divided by the maximum of the screen_width and screen_height at that instant. This way, the block's exact shape and orientation will not be different. 
+                </p>
+
+            <h3>Rendering</h3>
+                <!-- TODO: technical explanation of geometry shaders -->
+                <!-- TODO: any problems we had -->
+                <p>
+                    Graphics was the toughest part of the project: we overestimated OpenGL's abilities and underestimated amount of work needed to be done graphically. 
+                    Thus we had no recources for 3d rendering and had to tackle problems as they arised.
+                </p>
+                <p>
+                    We wanted some variation in color between cells of the same type, so instead of defining a single color for each type, we defined a range of colors that can be randomly picked from.
+                    Our first approach was naive: push 6 vertices per face, push 6 faces per cube, push all cubes in all chunks to OpenGL to render. 
+                    This was expectedly slow, so we started optimizing: first thing was to only push faces that are adjacent to transparent blocks, because they are not viewable otherwise. 
+                    Second thing was to hash a chunks mesh, so we remember all the vertices of a chunk and only update the mesh when the chunks updates. 
+                    This brough us to decent performance, we could now render 100x100 worlds at good performance. However, 6 vertices + 6 colors per face was excessive, so we started to look for a solution. 
+                    And we found one: geometry shader. Geometry shader resides between vertex and fragment shader, and has the ability to create new vertices.
+                    That is exactly what we did: instead of pushing 6 vertices, we only pushed starting cube point and direction vector to construct a face. 
+                    Now instead of 12(6 vertices + 6 colors) vectors per face we are only pushing 3(vertex + direction + color) and letting geometry shader construct the other 3 vetices. 
+                    All that allowed us to render worlds of 250x250 blocks and more.
+                </p>
+                <p>
+                    One problem we had to solve is chunk size. Bigger chunks take longer to update on change. Smaller chunks take longer to render because of more calls to OpenGL.
+                    We ended up going with chunk size of 32, this provided optimal results for memory and time efficency.
+                </p>
+
+                <p>
+                    <h4> Next steps: </h4>
+                    Next logical steps to create larger worlds would be:
+                    <ul>
+                        <li> Level of detail: less detail the further chunks are away. </li>
+                        <li> Storing color maps per chunk: intead of making every cell store its own color have it store some id of color in that chunk, that would reduce bandwith per cell even more. </li>
+                        <li> Greedy meshing: combine adjacent faces into a single face, combined with step 2 and barycentric coordinates it can be done without sacrificing color fidelity(might be slow if there are a lot of updates).</li>
+                    </ul>
+                    All those were out of scope of the project, as are on a much larger scale than we need.
+                </p>
+
+            <h3>Materials</h3>
+                <!-- Materials should be done -->
+                <p>
+                    We created a CELL struct and defined a number of macros for different cell types.
+                    Below is a list of all cell types we ended up creating and their behaviors.
+                </p>
+                    <ul>
+                        <li>WALL: intended to be used as boundaries within the world, colored to look like stone</li>
+                        <li>AIR: fills empty space within the world, completely transparent</li>
+                        <li>SAND: falls down to create mounds, can be burned away by fire, can grow grass</li>
+                        <li>WATER: volumetric, emits steam when putting out fire, slightly transparent</li>
+                        <li>FIRE: ethereal (floats), burns away sand, is extinguished by water/snow, emits smoke</li>
+                        <li>SNOW: falls down to create mounds, turns into water when putting out fire</li>
+                        <li>GRASS: falls and creates patches of variable length grass if it lands on plantable material, can be burned away by fire</li>
+                        <li>TOPGRASS: cannot be explicitly spawned by users, used under the hood to prevent grass from infinitely growing</li>
+                        <li>WOOD: static, doesn't move from where it is spawned, can be burned away by fire, can grow grass</li>
+                        <li>STEAM: ethereal (floats), naturally created when water puts out fire, slightly transparent</li>
+
+                <p>
+                    Use of X-Macros allowed us to easily add new cells, we just need to input their property and update function in one place.
+                    This is done by maintaining 2 parallel lists: type to function and type to property, these lists ensure O(1) access(without hashing), to frequently accessed components.
+
+                    Each macro is defined with not just the type of cell, but also properties (ex. burnable, plantable) and a specific update function.
+                    During simulation, each cell is called with its respective update function.
+                    Thus, the update functions define behavior per tick for each type.
+                </p>
+                <p>
+                    For sand and snow, particles will fall directly below if the space is empty.
+                    If it isn't empty, randomly select an empty cell from one of the 8 cells adjacently below.
+                </p>
+                <p>
+                    For water, particles will fall directly below if the space is empty.
+                    If it isn't empty, randomly select an empty cell from one of the 16 cells directly adjacent or adjacently below.
+                </p>
+                <p> For fire, we first check if any of the 26 neighboring cells are of type WATER or SNOW.
+                    If there is water, we replace both the fire and water cell with steam.
+                    If there is snow, we replace the fire cell with steam and the snow cell with water.
+                    If there is no WATER or SNOW, for each neighboring cell that has <code>PROPERTY_BURNABLE</code>, we burn the neighboring cell, replacing with either FIRE or SMOKE.
+                    If there is nothing to burn in the neighboring cells, the fire cell burns out with a chance and is replaced by AIR.
+                    If the fire cell still exists by now, it has a chance to emit smoke and randomly moves into an empty neighboring cells.
+                    If there is sand, the fire and sand cells become 2 smoke blocks, and a new fire block is generated.
+                </p>
+                <p>
+                    For grass, particles will fall directly below if the space is empty.
+                    If it isn't empty, we check if the cell directly below has <code>PROPERTY_PLANTABLE</code>. 
+                    If it is plantable, we randomly select a length between [1, 5] and iteratively set empty cells above up to the length with type GRASS.
+                    We set the top GRASS particle to type TOPGRASS, which indicates the end of the grass blade and prevents future ticks from continuinly extending the grass blade.
+                    With a chance, we then spawn more GRASS in empty neighboring cells.
+                    If the grass particle does not land on plantable material, it disappears and is replaced by AIR.
+                </p>
+                <p>
+                    With each update, steam and smoke have a chance to dissipate into AIR.
+                    Otherwise, they randomly move into an empty cell adjacently above it.
+                </p>
+                <p>
+                    Stone and wood have update functions that do nothing since they do not move naturally.
+                </p>
+                <p>
+                    We didn't have any major problems with this part of implementation.
+                </p>
+
+            <h3>Simulation</h3>
+                <!-- TODO: technical explanation of how the world is updated with each tick, explanation of iterating through chunks, any optimization we do in skipping certain cells -->
+                <!-- TODO: any problems we had (update order, problems where some cells were unupdated) -->
+                <p>
+                   <h3> Technical approach </h3>
+                   We decided to divide the world into chunks: that would allow us to easier manage the data and apply a lot of optimizations.
+                   Main classes:
+                   <ul>
+                    <li>World: manages all chunks. Creation of new chunks, getting, setting cells locally. Only updating chunks needed to be updated. </li>
+                    <li>Chunk: handles updating cells locally, handles its own update region. </li>
+                   </ul>
+                   World has a lot of blocks and a lot of those blocks are in steady state: will not move untill something around them changes.
+                   Thus we needed a solution to only update cells that needed to be updated. To do this every time a cell moves/sets other cell/changes state we expand a bounding cube around that point.
+                    This allowed us to only update cells which needed to be updated. 
+
+                    We also decided to upadte everything in-place, so our cellular automation became an approximation but we did not need to hold copies of the world.
+                    To know what cells were already updated we created dirty_cells bitmap inside each chunk, this allowed us to know about the changes with little memory cost.
+                    Update-queue approach might have been better for multithreading, but we decided not to add multithreading support, as the biggest bottleneck is still graphics.
+                </p>
+                <p>
+                    Before simulation, our scene consists of a flat surface of sand(the floor), as well as some blocks that are hovering above the sand. Our simulation begins with the clicking of the 'p' button, in which all the particles situated above the floor will
+                    fall downwards. 
+                    For fire, if it interacts with the sand block it will spawn into two smoke blocks and another fire block, while make the sand blocks disappear. 
+                    If water does not fall directly down, it will have equal probability of either sliding over itself or falling downwards vertically, and it also can go through sand.
+                </p>
+
+        </div>
+
+        <div>
+            <h2>Results</h2>
+            We successfully completed what we set out to do: falling-sand type simultaion in 3D.
+            We did learn a lot on the way about rendering and general engine design. 
+            Initially we were prepairing to handle hundreds of thousands of cells, coming from 2d examples.
+            However, we discovered that in 3D, despite having another dimension, the amount of updates needed for immersive simulation is not that much, in the order of thousands, and simple optimizations get most work done.
+            So the conclusion of this project is that large falling-sand simulated 3D worlds are possible, but that is an exercise in optimizing graphics rendering before anything else.
+        </div>
+        
+        <div>
+            <h2>Contributions</h2>
+            <li>Aaron Haowen Zheng</li>
+                <!-- TODO: -->
+            <li>Sylvia Chen</li>
+                <p>
+                    I worked mostly on materials and the GUI, building off of Artem's initial macro framework for defining cell types and Project 4's gui framework. 
+                    The most effort went into writing the update functions for all the different materials and designing the interactions between different materials.
+                    I also had to implement colors for materials and worked a little bit on the importing colors directly to the shaders.
+                    Then I connected several functionalities to GUI buttons, allowing users to select which materials to spawn, what size brush to user, and save/load world files.
+                    I also created the demo map!
+                </p>
+            <li>Artem Shumay</li>
+                <!-- TODO: -->
+                <p>
+                    I was mostly working on the engine backend. Created a simple base for extensible materials.
+                    Created world and chunk classes with all optimizations, which could be abstracted away for interaction through get and spawn functions.
+                    Worked with others on initial shader work, created simple cursor cube rendering, memoizing/pushing meshes, as well as developed and repurposed shaders and code for geometry shader. 
+                    As well as other improvements in random places in code.
+                </p>
+            <li>Lawrence Lam</li>
+                <!-- TODO: -->
+                Worked mostly on the camera controls and block spawning logic, which was built off Project 4's camera controls but needed many modifications to mesh well with our new simulated world grid system.
+                For block spawning logic I implemented the Bresenhams Line Drawing algorithm, brush sizing, and spawn distance controls.
+                Outside of that I mainly worked on refactoring code from the project 4's cloth simulator to adapt them for our purposes and other general debugging.
+        </div>
 </body>
 </html>
