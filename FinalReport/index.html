@@ -257,28 +257,30 @@
             <h3>Simulation</h3>
                 <!-- TODO: technical explanation of how the world is updated with each tick, explanation of iterating through chunks, any optimization we do in skipping certain cells -->
                 <!-- TODO: any problems we had (update order, problems where some cells were unupdated) -->
-                <p>
-                   <h3> Technical approach </h3>
-                   We decided to divide the world into chunks: that would allow us to easier manage the data and apply a lot of optimizations.
-                   Main classes:
-                   <ul>
-                    <li>World: manages all chunks. Creation of new chunks, getting, setting cells locally. Only updating chunks needed to be updated. </li>
-                    <li>Chunk: handles updating cells locally, handles its own update region. </li>
-                   </ul>
-                   World has a lot of blocks and a lot of those blocks are in steady state: will not move untill something around them changes.
-                   Thus we needed a solution to only update cells that needed to be updated. To do this every time a cell moves/sets other cell/changes state we expand a bounding cube around that point.
-                    This allowed us to only update cells which needed to be updated. 
+                <h3> Technical approach </h3>
+                    <p>
+                        We decided to divide the world into chunks: that would allow us to easier manage the data and apply a lot of optimizations.
+                        Main classes:
+                    </p>
+                    <ul>
+                        <li>World: manages all chunks. Creation of new chunks, getting, setting cells locally. Only updating chunks needed to be updated. </li>
+                        <li>Chunk: handles updating cells locally, handles its own update region. </li>
+                    </ul>
+                   <p>
+                        World has a lot of blocks and a lot of those blocks are in steady state: will not move untill something around them changes.
+                        Thus we needed a solution to only update cells that needed to be updated. To do this every time a cell moves/sets other cell/changes state we expand a bounding cube around that point.
+                        This allowed us to only update cells which needed to be updated. 
 
-                    We also decided to update everything in-place, so our cellular automation became an approximation but we did not need to hold copies of the world.
-                    To know what cells were already updated we created dirty_cells bitmap inside each chunk, this allowed us to know about the changes with little memory cost.
-                    Update-queue approach might have been better for multithreading, but we decided not to add multithreading support, as the biggest bottleneck is still graphics.
-                </p>
-                <p>
-                    Before simulation, our scene consists of a flat surface of sand(the floor), as well as some blocks that are hovering above the sand. Our simulation begins with the clicking of the 'p' button, in which all the particles situated above the floor will
-                    fall downwards. 
-                    For fire, if it interacts with the sand block it will spawn into two smoke blocks and another fire block, while make the sand blocks disappear. 
-                    If water does not fall directly down, it will have equal probability of either sliding over itself or falling downwards vertically, and it also can go through sand.
-                </p>
+                        We also decided to update everything in-place, so our cellular automation became an approximation but we did not need to hold copies of the world.
+                        To know what cells were already updated we created dirty_cells bitmap inside each chunk, this allowed us to know about the changes with little memory cost.
+                        Update-queue approach might have been better for multithreading, but we decided not to add multithreading support, as the biggest bottleneck is still graphics.
+                    </p>
+                    <p>
+                        Before simulation, our scene consists of a flat surface of sand(the floor), as well as some blocks that are hovering above the sand. Our simulation begins with the clicking of the 'p' button, in which all the particles situated above the floor will
+                        fall downwards. 
+                        For fire, if it interacts with the sand block it will spawn into two smoke blocks and another fire block, while make the sand blocks disappear. 
+                        If water does not fall directly down, it will have equal probability of either sliding over itself or falling downwards vertically, and it also can go through sand.
+                    </p>
 
         </div>
 
@@ -311,9 +313,11 @@
                     As well as other improvements in random places in code.
                 </p>
             <li>Lawrence Lam</li>
-                Worked mostly on the camera controls and block spawning logic, which was built off Project 4's camera controls but needed many modifications to mesh well with our new simulated world grid system.
-                For block spawning logic I implemented the Bresenhams Line Drawing algorithm, brush sizing, and spawn distance controls.
-                Outside of that I mainly worked on refactoring code from the project 4's cloth simulator to adapt them for our purposes and other general debugging.
+                <p>
+                    Worked mostly on the camera controls and block spawning logic, which was built off Project 4's camera controls but needed many modifications to mesh well with our new simulated world grid system.
+                    For block spawning logic I implemented the Bresenhams Line Drawing algorithm, brush sizing, and spawn distance controls.
+                    Outside of that I mainly worked on refactoring code from the project 4's cloth simulator to adapt them for our purposes and other general debugging.
+                </p>
         </div>
 </body>
 </html>
