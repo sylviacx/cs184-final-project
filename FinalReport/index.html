@@ -269,7 +269,7 @@
                    Thus we needed a solution to only update cells that needed to be updated. To do this every time a cell moves/sets other cell/changes state we expand a bounding cube around that point.
                     This allowed us to only update cells which needed to be updated. 
 
-                    We also decided to upadte everything in-place, so our cellular automation became an approximation but we did not need to hold copies of the world.
+                    We also decided to update everything in-place, so our cellular automation became an approximation but we did not need to hold copies of the world.
                     To know what cells were already updated we created dirty_cells bitmap inside each chunk, this allowed us to know about the changes with little memory cost.
                     Update-queue approach might have been better for multithreading, but we decided not to add multithreading support, as the biggest bottleneck is still graphics.
                 </p>
