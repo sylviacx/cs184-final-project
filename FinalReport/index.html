@@ -182,17 +182,17 @@
                     One problem we had to solve is chunk size. Bigger chunks take longer to update on change. Smaller chunks take longer to render because of more calls to OpenGL.
                     We ended up going with chunk size of 32, this provided optimal results for memory and time efficency.
                 </p>
-
-                <h4> Next steps: </h4>
-                    <p>
-                        Next logical steps to create larger worlds would be:
-                        <ul>
-                            <li> Level of detail: less detail the further chunks are away. </li>
-                            <li> Storing color maps per chunk: intead of making every cell store its own color have it store some id of color in that chunk, that would reduce bandwith per cell even more. </li>
-                            <li> Greedy meshing: combine adjacent faces into a single face, combined with step 2 and barycentric coordinates it can be done without sacrificing color fidelity(might be slow if there are a lot of updates).</li>
-                        </ul>
-                        All those were out of scope of the project, as are on a much larger scale than we need.
-                    </p>
+                <p>
+                    Next logical steps to create larger worlds would be:
+                </p>
+                <ul>
+                    <li> Level of detail: less detail the further chunks are away. </li>
+                    <li> Storing color maps per chunk: intead of making every cell store its own color have it store some id of color in that chunk, that would reduce bandwith per cell even more. </li>
+                    <li> Greedy meshing: combine adjacent faces into a single face, combined with step 2 and barycentric coordinates it can be done without sacrificing color fidelity(might be slow if there are a lot of updates).</li>
+                </ul>
+                <p>
+                    All those were out of scope of the project, as are on a much larger scale than we need.
+                </p>
 
             <h3>Materials</h3>
                 <!-- Materials should be done -->
@@ -251,31 +251,30 @@
             <h3>Simulation</h3>
                 <!-- TODO: technical explanation of how the world is updated with each tick, explanation of iterating through chunks, any optimization we do in skipping certain cells -->
                 <!-- TODO: any problems we had (update order, problems where some cells were unupdated) -->
-                <h3> Technical approach </h3>
-                    <p>
-                        We decided to divide the world into chunks: that would allow us to easier manage the data and apply a lot of optimizations.
-                        Main classes:
-                    </p>
-                    <ul>
-                        <li>World: manages all chunks. Creation of new chunks, getting, setting cells locally. Only updating chunks needed to be updated. </li>
-                        <li>Chunk: handles updating cells locally, handles its own update region. </li>
-                    </ul>
-                   <p>
-                        World has a lot of blocks and a lot of those blocks are in steady state: will not move untill something around them changes.
-                        Thus we needed a solution to only update cells that needed to be updated. To do this every time a cell moves/sets other cell/changes state we expand a bounding cube around that point.
-                        This allowed us to only update cells which needed to be updated. 
-
-                        We also decided to update everything in-place, so our cellular automation became an approximation but we did not need to hold copies of the world.
-                        To know what cells were already updated we created dirty_cells bitmap inside each chunk, this allowed us to know about the changes with little memory cost.
-                        Update-queue approach might have been better for multithreading, but we decided not to add multithreading support, as the biggest bottleneck is still graphics.
-                    </p>
-                    <p>
-                        Before simulation, our scene consists of a flat surface of sand(the floor), as well as some blocks that are hovering above the sand. Our simulation begins with the clicking of the 'p' button, in which all the particles situated above the floor will
-                        fall downwards. 
-                        For fire, if it interacts with the sand block it will spawn into two smoke blocks and another fire block, while make the sand blocks disappear. 
-                        If water does not fall directly down, it will have equal probability of either sliding over itself or falling downwards vertically, and it also can go through sand.
-                    </p>
-
+                <p>
+                    We decided to divide the world into chunks: that would allow us to easier manage the data and apply a lot of optimizations.
+                    Main classes:
+                </p>
+                <ul>
+                    <li>World: manages all chunks. Creation of new chunks, getting, setting cells locally. Only updating chunks needed to be updated. </li>
+                    <li>Chunk: handles updating cells locally, handles its own update region. </li>
+                </ul>
+               <p>
+                    World has a lot of blocks and a lot of those blocks are in steady state: will not move untill something around them changes.
+                    Thus we needed a solution to only update cells that needed to be updated. To do this every time a cell moves/sets other cell/changes state we expand a bounding cube around that point.
+                    This allowed us to only update cells which needed to be updated. 
+                </p>
+                <p>
+                    We also decided to update everything in-place, so our cellular automation became an approximation but we did not need to hold copies of the world.
+                    To know what cells were already updated we created dirty_cells bitmap inside each chunk, this allowed us to know about the changes with little memory cost.
+                    Update-queue approach might have been better for multithreading, but we decided not to add multithreading support, as the biggest bottleneck is still graphics.
+                </p>
+                <p>
+                    Before simulation, our scene consists of a flat surface of sand(the floor), as well as some blocks that are hovering above the sand. Our simulation begins with the clicking of the 'p' button, in which all the particles situated above the floor will
+                    fall downwards. 
+                    For fire, if it interacts with the sand block it will spawn into two smoke blocks and another fire block, while make the sand blocks disappear. 
+                    If water does not fall directly down, it will have equal probability of either sliding over itself or falling downwards vertically, and it also can go through sand.
+                </p>       
         </div>
 
         <div>
