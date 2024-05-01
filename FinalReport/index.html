@@ -55,7 +55,7 @@
         }
 
         p, li {
-            font-size: 11px;
+            font-size: 12px;
             color: #666;
             padding: 8px 0;
         }
@@ -221,26 +221,19 @@
                     Thus, the update functions define behavior per tick for each type.
                 </p>
                 <p>
-                    For sand and snow, particles will fall directly below if the space is empty.
-                    If it isn't empty, randomly select an empty cell from one of the 8 cells adjacently below.
+                    For sand, snow and water, particles will fall directly below if the space is empty.
+                    If it isn't empty, randomly select an empty cell from adjacent cells.
                 </p>
-                <p>
-                    For water, particles will fall directly below if the space is empty.
-                    If it isn't empty, randomly select an empty cell from one of the 16 cells directly adjacent or adjacently below.
-                </p>
-                <p> For fire, we first check if any of the 26 neighboring cells are of type WATER or SNOW.
-                    If there is water, we replace both the fire and water cell with steam.
-                    If there is snow, we replace the fire cell with steam and the snow cell with water.
+                <p> For fire, we first check if any of the 26 neighboring cells are of type WATER or SNOW since those types will immediately burn out fire.
                     If there is no WATER or SNOW, for each neighboring cell that has <code>PROPERTY_BURNABLE</code>, we burn the neighboring cell, replacing with either FIRE or SMOKE.
                     If there is nothing to burn in the neighboring cells, the fire cell burns out with a chance and is replaced by AIR.
                     If the fire cell still exists by now, it has a chance to emit smoke and randomly moves into an empty neighboring cells.
-                    If there is sand, the fire and sand cells become 2 smoke blocks, and a new fire block is generated.
                 </p>
                 <p>
                     For grass, particles will fall directly below if the space is empty.
                     If it isn't empty, we check if the cell directly below has <code>PROPERTY_PLANTABLE</code>. 
                     If it is plantable, we randomly select a length between [1, 5] and iteratively set empty cells above up to the length with type GRASS.
-                    We set the top GRASS particle to type TOPGRASS, which indicates the end of the grass blade and prevents future ticks from continuinly extending the grass blade.
+                    We set the top GRASS particle to type TOPGRASS. 
                     With a chance, we then spawn more GRASS in empty neighboring cells.
                     If the grass particle does not land on plantable material, it disappears and is replaced by AIR.
                 </p>
@@ -287,11 +280,13 @@
 
         <div>
             <h2>Results</h2>
-            We successfully completed what we set out to do: falling-sand type simultaion in 3D.
-            We did learn a lot on the way about rendering and general engine design. 
-            Initially we were prepairing to handle hundreds of thousands of cells, coming from 2d examples.
-            However, we discovered that in 3D, despite having another dimension, the amount of updates needed for immersive simulation is not that much, in the order of thousands, and simple optimizations get most work done.
-            So the conclusion of this project is that large falling-sand simulated 3D worlds are possible, but that is an exercise in optimizing graphics rendering before anything else.
+            <p>
+                We successfully completed what we set out to do: falling-sand type simultaion in 3D.
+                We did learn a lot on the way about rendering and general engine design. 
+                Initially we were prepairing to handle hundreds of thousands of cells, coming from 2d examples.
+                However, we discovered that in 3D, despite having another dimension, the amount of updates needed for immersive simulation is not that much, in the order of thousands, and simple optimizations get most work done.
+                So the conclusion of this project is that large falling-sand simulated 3D worlds are possible, but that is an exercise in optimizing graphics rendering before anything else.
+            </p>
         </div>
         
         <div>
