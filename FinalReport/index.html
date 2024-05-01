@@ -49,9 +49,9 @@
         }
 
         h3 {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: normal;
-            color: #666;
+            color: #333;
         }
 
         p, li {
@@ -183,16 +183,16 @@
                     We ended up going with chunk size of 32, this provided optimal results for memory and time efficency.
                 </p>
 
-                <p>
-                    <h4> Next steps: </h4>
-                    Next logical steps to create larger worlds would be:
-                    <ul>
-                        <li> Level of detail: less detail the further chunks are away. </li>
-                        <li> Storing color maps per chunk: intead of making every cell store its own color have it store some id of color in that chunk, that would reduce bandwith per cell even more. </li>
-                        <li> Greedy meshing: combine adjacent faces into a single face, combined with step 2 and barycentric coordinates it can be done without sacrificing color fidelity(might be slow if there are a lot of updates).</li>
-                    </ul>
-                    All those were out of scope of the project, as are on a much larger scale than we need.
-                </p>
+                <h4> Next steps: </h4>
+                    <p>
+                        Next logical steps to create larger worlds would be:
+                        <ul>
+                            <li> Level of detail: less detail the further chunks are away. </li>
+                            <li> Storing color maps per chunk: intead of making every cell store its own color have it store some id of color in that chunk, that would reduce bandwith per cell even more. </li>
+                            <li> Greedy meshing: combine adjacent faces into a single face, combined with step 2 and barycentric coordinates it can be done without sacrificing color fidelity(might be slow if there are a lot of updates).</li>
+                        </ul>
+                        All those were out of scope of the project, as are on a much larger scale than we need.
+                    </p>
 
             <h3>Materials</h3>
                 <!-- Materials should be done -->
